@@ -1,4 +1,4 @@
 export interface FilterOptions {
-    key: string ;
-    value: string ;
+    value: string | number ;
+    name: string | boolean | number ;
 }

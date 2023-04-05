@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { BrowserRouter } from 'react-router-dom';
 import { ProSidebarProvider } from 'react-pro-sidebar';
+import { BrowserRouter } from 'react-router-dom';
 
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { FilterProvider, UIProvider } from './context';
+import { EmployeeProvider, FilterProvider, UIProvider } from './context';
 
-import { lightTheme } from './themes';
 import { App } from './App';
-import "./index.css"
+import "./index.css";
+import { lightTheme } from './themes';
 
 
 const root = ReactDOM.createRoot(
@@ -17,18 +17,20 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <FilterProvider>
-      <UIProvider>
-      <ProSidebarProvider>
-        <BrowserRouter>
-          <CssBaseline/>
-          <ThemeProvider theme={ lightTheme }>
-            <App/>
-          </ThemeProvider>
-        </BrowserRouter>
-        </ProSidebarProvider>
-      </UIProvider>
-    </FilterProvider>
+    <EmployeeProvider>
+      <FilterProvider>
+        <UIProvider>
+          <ProSidebarProvider>
+            <BrowserRouter>
+              <CssBaseline />
+              <ThemeProvider theme={lightTheme}>
+                <App />
+              </ThemeProvider>
+            </BrowserRouter>
+          </ProSidebarProvider>
+        </UIProvider>
+      </FilterProvider>
+    </EmployeeProvider>
   </React.StrictMode>
 );
 

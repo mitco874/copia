@@ -1,22 +1,14 @@
-import {  useContext, ChangeEvent } from 'react';
-import { Button, Grid, InputLabel, TextField } from '@mui/material'
+import { Button, Grid, InputLabel, TextField } from '@mui/material';
+import { FC } from 'react';
 
-import { FilterContext } from '../../../context';
-import { formatDate } from '../../../utils';
+interface Props {
+    onValueChange?: (e: any) => void;
+    startDateValue: string;
+    endDateValue: string;
+    onClearRange: () => void;
+}
 
-export const FilterDateRange = () => {
-
-    const { startDate, endDate, updateStartDate, updateEndDate, clearRangeDate } = useContext(FilterContext)
-
-    const onUpdateStartDate = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { value } = event.target;
-        updateStartDate(formatDate.yearMonthDayToDayMonthYear(value));
-    }
-    
-    const onUpdateEndDate = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { value } = event.target;
-        updateEndDate(formatDate.yearMonthDayToDayMonthYear(value));
-    }
+export const FilterDateRange: FC<Props> = ({ onValueChange, startDateValue, endDateValue, onClearRange }) => {
 
     return (
         <Grid container spacing={1}  >
@@ -26,12 +18,13 @@ export const FilterDateRange = () => {
                     Start date:
                 </InputLabel>
                 <TextField
+                    name="startDate"
                     variant="outlined"
                     size="small"
                     type="date"
-                    onChange={onUpdateStartDate}
+                    onChange={onValueChange}
                     fullWidth
-                    value={formatDate.dayMonthYearToYearMonthDay(startDate)}
+                    value={(startDateValue)}
                 />
             </Grid>
 
@@ -40,21 +33,22 @@ export const FilterDateRange = () => {
                     End date:
                 </InputLabel>
                 <TextField
+                    name="endDate"
                     type="date"
                     variant="outlined"
                     size="small"
-                    onChange={onUpdateEndDate}
+                    onChange={onValueChange}
                     fullWidth
-                    value={formatDate.dayMonthYearToYearMonthDay(endDate)}
+                    value={(endDateValue)}
                 />
             </Grid>
 
             <Grid item xs={4} marginTop={"34px"} > 
                 <Button
                     variant='contained'
-                    onClick={clearRangeDate}
+                    onClick={onClearRange}
                 >
-                    clear
+                    clear date
                 </Button>
             </Grid>
 

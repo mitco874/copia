@@ -1,13 +1,12 @@
 
-import { Box} from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
+import { Box } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 
-import { employeesDataDB } from "../../../db/employees";
-import { Employee } from "../../../interfaces"
-import { EmployeeBasicInfo, EmployeeContactInfo, EmployeOptions, EmployeeVacStatus } from "../";
-import "./EmployeesTable.css"
-
-const employeesData: Employee[] = employeesDataDB as Employee[];
+import { useContext } from "react";
+import { EmployeOptions, EmployeeBasicInfo, EmployeeContactInfo, EmployeeVacStatus } from "../";
+import { EmployeeContext } from "../../../context";
+import { Employee } from "../../../interfaces";
+import "./EmployeesTable.css";
 
 const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width:10 },
@@ -37,16 +36,16 @@ const columns: GridColDef[] = [
         )
     },
     { 
-        field: "vaccinationStatus",
+        field: "vaccinatedState",
         headerName: "Vaccination status", 
         width: 160, 
         sortable: false,
         renderCell: (params: GridRenderCellParams) => (
-            <EmployeeVacStatus status={params.row.vaccinationStatus} />
+            <EmployeeVacStatus status={params.row.vaccinatedState} />
         )
     },
-    { field: "typeOfVaccine", headerName: "Type of vaccine", width: 150, sortable: false },
-    { field: "numberOfDoses", headerName: "Doses", width: 80, sortable: false },
+    { field: "vaccineType", headerName: "Type of vaccine", width: 150, sortable: false },
+    { field: "doses", headerName: "Doses", width: 80, sortable: false },
     { field: "vaccinationDate", headerName: "Vaccination date", width: 150, sortable: false },
     { 
         field: "options", 
@@ -60,7 +59,10 @@ const columns: GridColDef[] = [
 
 
 export const EmployeesTable = () => {
-    const rows = employeesData.map( (employee:Employee) => ({
+
+    const { employees } = useContext(EmployeeContext);
+
+    const rows = employees.map( (employee:Employee) => ({
         id: employee.id,
         basicInfo: { 
             fullName: employee.fullName,
@@ -71,20 +73,26 @@ export const EmployeesTable = () => {
             email: employee.email,
             phone: employee.phone
         },
-        vaccinationStatus: employee.vaccinationStatus,
-        typeOfVaccine: employee.typeOfVaccine,
+        vaccinationStatus: employee.vaccinatedState,
+        typeOfVaccine: employee.vaccineType,
         vaccinationDate: employee.vaccinationDate,
-        numberOfDoses: employee.numberOfDoses
+        numberOfDoses: employee.doses
     }))
 
   return (
     <Box className="employees-table">
         <DataGrid 
-            
             rows={ rows }
             columns={ columns }
-            rowHeight={80}
-            pageSizeOptions={[]}
+            initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 7,
+                  },
+                },
+              }}
+            rowHeight={70}
+            pageSizeOptions={[7]}
         />
     </Box>
   )

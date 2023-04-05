@@ -1,56 +1,82 @@
 import { Grid } from '@mui/material'
-import { useContext } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 
-import { FilterContext } from "../../../context"
-import { FilterOptions } from '../../../interfaces'
+import { FilterOptions, vaccinatedState, vaccineType } from '../../../interfaces'
 import { FilterDateRange } from '../../../ui/components'
 import { Filter } from '../../../ui/components/Filter/Filter'
+import { EmployeeContext } from '../../../context'
 
 const vaccinationStatusOptions: FilterOptions[] = [
     {
-        key: "none",
-        value: "None"
+        value: -1,
+        name: "All"
     },
     {
-        key: "true",
-        value: "Vaccinated"
+        value: "true",
+        name: "Vaccinated"
     },
     {
-        key: "false",
-        value: "Not vaccinated"
+        value: "false",
+        name: "Not vaccinated"
     }
 ]
 
 const vaccinationTypeOptions: FilterOptions[] = [
     {
-        key: "none",
-        value: "None"
+        value: -1,
+        name: "All"
     },
     {
-        key: "0",
-        value: "Sputnik"
+        value: 0,
+        name: "Sputnik"
     },
     {
-        key: "1",
-        value: "AstraZeneca"
+        value: 1,
+        name: "AstraZeneca"
     },
     {
-        key: "2",
-        value: "Pfizer"
+        value: 2,
+        name: "Pfizer"
     },
     {
-        key: "3",
-        value: " Jhonson&Jhonson"
+        value: 3,
+        name: " Jhonson&Jhonson"
     }
 ]
+
+interface FilterData {
+    vaccinationState: vaccinatedState ,
+    vaccineType: vaccineType ,
+    startDate: string ,
+    endDate: string 
+}
+
+const initialValues: FilterData={
+    vaccinationState: -1,
+    vaccineType: -1,
+    startDate: "",
+    endDate: ""
+}
+
 export const FilterEmployeesOptions = () => {
-    const { vaccinationState,
-        vaccineType,
-        updateVaccineState,
-        updateVaccineType } = useContext(FilterContext);
 
+    const [filterForm, setFilterForm] = useState<FilterData>(initialValues);
     
+    const { filterEmployee } = useContext(EmployeeContext);
 
+    const onFilterFormChange = ( event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>  ) =>{
+        const {name, value} = event.target;
+        setFilterForm({...filterForm, [name]: value })
+    }
+
+    const onClearRange = () => {
+        setFilterForm({...filterForm, startDate: "", endDate: ""});
+    }
+    
+    useEffect(() => {
+        filterEmployee( filterForm.vaccinationState, filterForm.vaccineType , filterForm.startDate, filterForm.endDate );
+    }, [filterForm])
+    
     return (
         <Grid
             container
@@ -59,22 +85,29 @@ export const FilterEmployeesOptions = () => {
         >
             <Grid item xs={12} sm={5} md={2}>
                 <Filter
+                    name='vaccinationState'
                     label='Vaccination state:'
                     options={vaccinationStatusOptions}
-                    value={vaccinationState}
-                    onValueChange={updateVaccineState}
+                    value={filterForm.vaccinationState}
+                    onValueChange={onFilterFormChange}
                 />
             </Grid>
             <Grid item xs={12} sm={5} md={2} >
                 <Filter
+                    name='vaccineType'
                     label='vaccine type:'
                     options={vaccinationTypeOptions}
-                    value={vaccineType}
-                    onValueChange={updateVaccineType}
+                    value={filterForm.vaccineType}
+                    onValueChange={onFilterFormChange}
                 />
             </Grid>
             <Grid item xs={12} sm={12} md={7} >
-                <FilterDateRange />
+                <FilterDateRange 
+                    startDateValue={filterForm.startDate}
+                    endDateValue={filterForm.endDate}
+                    onValueChange={onFilterFormChange}
+                    onClearRange={onClearRange}
+                    />
             </Grid>
         </Grid>
 

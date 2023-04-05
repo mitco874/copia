@@ -6,10 +6,12 @@ export interface Employee{
     dateBirth: string;    //ToDo: check type
     address: string;
     phone: string;
-    vaccinationStatus: boolean;
-    typeOfVaccine: typeOfVaccine | null;
+    vaccinatedState: vaccinatedState;
+    vaccineType: vaccineType;
     vaccinationDate: string | null;  //ToDo: check type
-    numberOfDoses: number | null;
+    doses: number | null;
 }
 
-type typeOfVaccine = "Sputnik" | "AstraZeneca" | "Pfizer" | "Jhonson&Jhonson";
+export type vaccinatedState = boolean | -1;
+
+export type vaccineType = "Sputnik" | "AstraZeneca" | "Pfizer" | "Jhonson&Jhonson" | -1;
